@@ -1,0 +1,40 @@
+
+<template>
+    <lightning-card>
+        <h3 slot="title">
+            {metadataName}
+        </h3>
+        <div slot="footer">
+                <lightning-button variant="brand" label="Save" title="Save" onclick={handleClick} class="slds-m-left_x-small" disabled={isDirty} data-id="handleSave"></lightning-button>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_direct">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input label = 'Label' type = 'text' value={rule.MasterLabel} onblur={handleBlur} data-id="ruleLabel" max-length="40" required="true"></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input label = 'Object API Name' type = 'text' value={rule.Object_API_Name__c}  data-id="ruleObjectName" max-length="40" required="true" onblur={handleBlur}></lightning-input>               
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input type="toggle" label="Is Active" name="isActive" checked={rule.Is_Active__c} required data-id="ruleIsActive" onblur={handleBlur}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input type="number" label = "Execution Order" value={rule.Execution_Order__c} min="0" data-id = "ruleOrder" onblur={handleBlur}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-input type="checkbox" label = "Execute Before Delete" checked={rule.Execute_Before_Delete__c} data-id="ruleIsBeforeDelete" onblur={handleBlur}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-input type="checkbox" label = "Execute Before Insert" checked={rule.Execute_Before_Insert__c} data-id="ruleIsBeforeInsert" onblur={handleBlur}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-input type="checkbox" label = "Execute Before Update" checked={rule.Execute_Before_Update__c} data-id="ruleIsBeforeUpdate" onblur={handleBlur}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-textarea name="expression" label="Expression" value={rule.Expression__c} required data-id="ruleExpression" max-length = "32768" onblur={handleBlur}></lightning-textarea>
+            </div>
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-textarea name="errorMessage" label="Error Message" value={rule.Error_Message__c} required data-id="ruleMessage" max-length = "32768" onblur={handleBlur}></lightning-textarea>
+            </div>
+        </div>
+    </lightning-card>
+</template>
