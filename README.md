@@ -1,4 +1,4 @@
-**RulesForge** - **A Design Learning Project** - **Prototype**
+**RulesForge** - **A Design Learning Project** - **Prototype** - **Final Stages**
 
 **RulesForge** is a dynamic metadata-driven validation rule engine for salesforce with a custom domain specific expression language.
 It is an attempt to create a custom expression language designed specifically for boolean validation logic, which can be interpretated and executed in apex. RulesForge is not a complete upgrade to native validation rule engine, rather an alternative with upgrades as well as limitations. 
