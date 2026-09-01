@@ -181,6 +181,23 @@ public class RuleEditorController {
 
         return rulesMeta[0];
     }
+
+
+    @AuraEnabled(cacheable = true)
+    public static List<RuleEngine_Rule__mdt> getAllExistingRules(){
+        try {
+            List<RuleEngine_Rule__mdt> rulesMeta = [SELECT DeveloperName,MasterLabel,Object_API_Name__c,Expression__c,Error_Message__c,Is_Active__c,Execution_Order__c,Has_Parent_Fields__c,
+                                               Execute_Before_Insert__c,Execute_Before_Update__c,Execute_Before_Delete__c,
+                                               AST_Chunk_1__c,AST_Chunk_2__c,AST_Chunk_3__c,AST_Chunk_4__c,AST_Chunk_5__c FROM RuleEngine_Rule__mdt  WITH SYSTEM_MODE LIMIT 500];
+            if(rulesMeta.size() == 0){
+                throw new AuraHandledException('No rules found');
+            }
+
+            return rulesMeta;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
                
     
     private static String getTypeFromField( Schema.DisplayType fieldType){

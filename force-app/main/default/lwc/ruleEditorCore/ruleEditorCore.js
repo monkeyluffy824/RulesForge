@@ -7,6 +7,8 @@ import getFunctionMetadata from '@salesforce/apex/RuleEditorController.getFuncti
 import getValidationSchema from '@salesforce/apex/RuleEditorController.getValidationSchema';
 import saveRule from '@salesforce/apex/RuleEditorController.saveRule';
 import { buildAST } from "c/astBuilder";
+import {subscribe,unsubscribe,onError} from 'lightning/empApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class RuleEditorCore extends LightningElement {
 
@@ -17,7 +19,15 @@ export default class RuleEditorCore extends LightningElement {
     fieldMetadata;
     functionsMetadata;
     validationSchema;
+    isSpinner = false;
+    channelName = '/event/Rule_Modify__e';
+    subscription = {};
+    message;
     @track rule={};
+
+    get isDirty(){
+        return !this._isDirty;
+    }
 
     @wire(CurrentPageReference)
     getStateParameters(CurrentPageReference){
@@ -112,6 +122,7 @@ export default class RuleEditorCore extends LightningElement {
             console.log(JSON.stringify(ruleRequest));
             saveRule({request : ruleRequest}).then((res)=>{
                 console.log('res', res);
+
             }).catch(error=>{
                 console.log(error);
             });
@@ -121,6 +132,7 @@ export default class RuleEditorCore extends LightningElement {
     }
 
     async handleClick(){
+        this.isSpinner = true;
         await this.astBuildHelper();
     }
 
@@ -134,4 +146,64 @@ export default class RuleEditorCore extends LightningElement {
         return 'UNKNOWN';
     }
     };
+
+    connectedCallback(){
+        this.handleSubscription();
+        this.registorError();
+    }
+
+    handleSubscription(){
+        const callback = (event)=>{
+            console.log('psc', JSON.stringify(event));
+            this.message = event.data.payload;
+            this.handleMessage();
+        }
+
+        subscribe(this.channelName,-1,callback).then((response)=>{
+            this.subscription = response;
+        });
+    }
+
+
+    disconnectedCallback(){
+        if(this.subscription){
+            unsubscribe(this.subscription,(response)=>{console.warn('Unsubcribed')});
+        }
+    }
+
+    registorError(){
+        onError((error)=>{
+            console.error(error);
+        });
+    }
+
+    handleMessage(){
+        if(!this.message){
+            return;
+        }
+        console.log(this.message);
+        if(!this.message?.MetaData_Name__c?.includes(this.metadataName)){
+            return;
+        }
+        const record = this.message;
+        if(record.Is_Success__c){
+            this.showToast('Success','success','Operation Completed Successfully.')
+        }else{
+            this.showToast('Error','error','Operation failed.')
+        }
+        if(this.isSpinner){
+            this.isSpinner = false;
+            this._isDirty=false;
+        }
+    }
+
+    showToast(title,variant,message){
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+
+        this.dispatchEvent(event);
+    }
 }

@@ -15,7 +15,7 @@
                 <lightning-input label = 'Object API Name' type = 'text' value={rule.Object_API_Name__c}  data-id="ruleObjectName" max-length="40" required="true" onblur={handleBlur}></lightning-input>               
             </div>
             <div class="slds-col slds-size_1-of-2">
-                <lightning-input type="toggle" label="Is Active" name="isActive" checked={rule.Is_Active__c} required data-id="ruleIsActive" onblur={handleBlur}></lightning-input>
+                <lightning-input type="toggle" label="Is Active" name="isActive" checked={rule.Is_Active__c}  data-id="ruleIsActive" onblur={handleBlur}></lightning-input>
             </div>
             <div class="slds-col slds-size_1-of-2">
                 <lightning-input type="number" label = "Execution Order" value={rule.Execution_Order__c} min="0" data-id = "ruleOrder" onblur={handleBlur}></lightning-input>
@@ -37,4 +37,5 @@
             </div>
         </div>
     </lightning-card>
+    <lightning-spinner alternative-text="Loading" size="large" if:true={isSpinner}></lightning-spinner>
 </template>
