@@ -23,6 +23,7 @@ export default class RuleEditorCore extends LightningElement {
     channelName = '/event/Rule_Modify__e';
     subscription = {};
     message;
+    _isNew = true;
     @track rule={};
 
     get isDirty(){
@@ -33,6 +34,9 @@ export default class RuleEditorCore extends LightningElement {
     getStateParameters(CurrentPageReference){
         if(CurrentPageReference){
             this._ruleName = CurrentPageReference.state.c__ruleName;
+            if(this._ruleName){
+                this._isNew = false;
+            }
             this.metadataName = this._ruleName ? this._ruleName : 'New Rule';
             
         }
@@ -128,6 +132,9 @@ export default class RuleEditorCore extends LightningElement {
             });
 
             
+        }else{
+            console.error(res);
+            this.isSpinner = false;
         }
     }
 
@@ -181,8 +188,7 @@ export default class RuleEditorCore extends LightningElement {
         if(!this.message){
             return;
         }
-        console.log(this.message);
-        if(!this.message?.MetaData_Name__c?.includes(this.metadataName)){
+        if(!this.message?.MetaData_Name__c?.includes(this.metadataName) && !this._isNew){
             return;
         }
         const record = this.message;
